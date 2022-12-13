@@ -64,16 +64,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         f_check = F_ERR_MSG
 
-        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={NOTIFY_F_ERR}"
-        print(requests.get(url).json()) # this sends the message        
+#        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={NOTIFY_F_ERR}"
+#        print(requests.get(url).json()) # this sends the message        
 
     if os.path.exists(f"{S_PATH}"):
         s_check = S_MSG
     else:
         s_check = S_ERR_MSG
 
-        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={NOTIFY_S_ERR}"
-        print(requests.get(url).json()) # this sends the message
+ #       url = f"https://api.telegram.org/bot{TOKEN}/sendMessage?chat_id={CHAT_ID}&text={NOTIFY_S_ERR}"
+ #       print(requests.get(url).json()) # this sends the message
 
     # hostname = "{SERVER_IP}"
     response = os.system("ping -c 1 " + hostname)
