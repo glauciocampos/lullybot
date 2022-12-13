@@ -15,11 +15,10 @@ from telegram import __version__ as TG_VER
 load_dotenv()
 
 TOKEN = os.environ.get("TOKEN")
-SERVER_IP = os.environ.get("SERVER_IP")
+hostname = os.environ.get("SERVER_IP")
 SERVER_STATUS_MSG = os.environ.get("SERVER_STATUS_MSG")
 SERVER_ERR_STATUS_MSG = os.environ.get("SERVER_ERR_STATUS_MSG")
 KB_SERVER_MSG = os.environ.get("KB_SERVER_MSG")
-
 F_PATH = os.environ.get("F_PATH")
 F_MSG = os.environ.get("F_MSG")
 KB_F_MSG = os.environ.get("KB_F_MSG")
@@ -53,37 +52,37 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if os.path.exists("{F_PATH}"):
-        f_check = "{F_MSG}"
+    if os.path.exists(f"{F_PATH}"):
+        f_check = F_MSG
     else:
-        f_check = "{F_ERR_MSG}"
+        f_check = F_ERR_MSG
 
-    if os.path.exists("{S_PATH}"):
-        series_check = "{S_MSG}"
+    if os.path.exists(f"{S_PATH}"):
+        s_check = S_MSG
     else:
-        series_check = "{S_ERR_MSG}"
+        s_check = S_ERR_MSG
 
-    hostname = "{SERVER_IP}"
+    # hostname = "{SERVER_IP}"
     response = os.system("ping -c 1 " + hostname)
     # and then check the response...
     if response == 0:
-        pingstatus = "{SERVER_STATUS_MSG}"
+        pingstatus = SERVER_STATUS_MSG
     else:
-        pingstatus = "{SERVER_ERR_STATUS_MSG}"
+        pingstatus = SERVER_ERR_STATUS_MSG
 
 
     """Sends a message with three inline buttons attached."""
     keyboard = [
         [
-            InlineKeyboardButton("Check-up Server", callback_data=pingstatus),
-            InlineKeyboardButton("Sincronismo", callback_data=f_check),
+            InlineKeyboardButton(KB_SERVER_MSG, callback_data=pingstatus),
+            InlineKeyboardButton(KB_F_MSG, callback_data=f_check),
         ],
-        [InlineKeyboardButton("Option 3", callback_data="3")],
+        [InlineKeyboardButton(KB_S_MSG, callback_data=s_check)],
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    await update.message.reply_text("Opções:", reply_markup=reply_markup)
+    await update.message.reply_text("---- !!Aplicação em testes!! ----\nQual serviço você quer que eu verifique?", reply_markup=reply_markup)
 
 
 async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -99,21 +98,27 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Displays info on how to use the bot."""
-    await update.message.reply_text("Use /start to test this bot.")
+    await update.message.reply_text("Use /lullybot para utilizar este bot.")
 
+async def criador_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Displays info on how to use the bot."""
+    await update.message.reply_text("Quem me criou foi o Glaucio Campos.")
+
+async def glauglau_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Displays info on how to use the bot."""
+    await update.message.reply_text("Não, aqui é a Lully.")
 
 def main() -> None:
     """Run the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TOKEN).build()
 
-    application.add_handler(CommandHandler("start", start))
+#    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("lully", start))
+    application.add_handler(CommandHandler("lullybot", start))
+    application.add_handler(CommandHandler("ajuda", help_command))
+    application.add_handler(CommandHandler("problema", help_command))
     application.add_handler(CallbackQueryHandler(button))
     application.add_handler(CommandHandler("help", help_command))
-
-    # Run the bot until the user presses Ctrl-C
-    application.run_polling()
-
-
-if __name__ == "__main__":
-    main()
+    application.add_handler(CommandHandler("criador", criador_command))
+    application.add_handler(CommandHandler("glauglau", glauglau_command))
